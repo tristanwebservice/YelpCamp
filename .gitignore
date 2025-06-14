@@ -1,37 +1,32 @@
 # Node.js specific files and directories
-node_modules/           # The largest one: all your installed packages
-npm-debug.log*          # Debug logs created by npm
-yarn-debug.log*         # Debug logs created by yarn (if you use yarn)
-yarn-error.log*         # Error logs created by yarn
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Environment Variables / Sensitive Data
-.env                    # Critical! Stores your database connection string,
-                        # API keys, secret session keys, etc. DO NOT COMMIT!
+.env
 
 # MongoDB related (if you have local DB files or logs)
-# You generally don't commit MongoDB data files if running locally
-# If your app creates specific MongoDB log files, add them here
-# For Mongoose, there's usually nothing specific to ignore unless you manually
-# create local test databases or dumps.
-db_data/                # Example: If you manually store MongoDB data files here
-data/db/                # Common location for MongoDB's default data directory
+db_data/
+data/db/
 
 # Log files
-*.log                   # Any generic log files created by your app
-logs/                   # A common directory for storing various application logs
+*.log
+logs/
 
 # Build artifacts / Temporary files (if you have front-end build processes)
-dist/                   # Common for compiled/transpiled front-end assets
-build/                  # Another common directory for compiled assets
-tmp/                    # Temporary files
+dist/
+build/
+tmp/
 
 # Operating System Files
-.DS_Store               # macOS specific hidden files
-Thumbs.db               # Windows specific hidden files
+.DS_Store
+Thumbs.db
 
 # Editor and IDE specific files (common ones)
-.vscode/                # VS Code workspace settings and extensions info
-.idea/                  # IntelliJ/WebStorm/PHPStorm IDE files
-*.swp                   # Vim swap files
-*.swo                   # Vim swap files
-*~                      # Backup files created by some editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
