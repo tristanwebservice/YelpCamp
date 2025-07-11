@@ -21,13 +21,9 @@ app.get(`/`, (req, res) => {
   res.render(`home`);
 });
 
-app.get(`/makecampground`, async (req, res) => {
-  const camp = new Campground({
-    title: `My backyard`,
-    description: `cheap camping!`,
-  });
-  await camp.save();
-  res.send(camp);
+app.get(`/campgrounds`, async (req, res) => {
+  const campgrounds = await Campground.find({}); // fetches data from db
+  res.render(`campgrounds/index`, { campgrounds }); // render index.ejs and pass data to it
 });
 
 // start the express web app, listening for requests
