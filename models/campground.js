@@ -1,6 +1,7 @@
-const mongoose = require(`mongoose`);
-const Schema = mongoose.Schema;
+const mongoose = require(`mongoose`); // mongoose lib
+const Schema = mongoose.Schema; // shortcut
 
+// the blueprint for each campground
 const CampgroundSchema = new Schema({
   title: String,
   price: String,
@@ -8,4 +9,7 @@ const CampgroundSchema = new Schema({
   location: String,
 });
 
+// mongoose will create a model named Campground based on the schema
+// the model interacts with the db, allowing to save and find info
+// by exporting it, the entire project can use it
 module.exports = mongoose.model(`Campground`, CampgroundSchema);
