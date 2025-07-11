@@ -26,6 +26,11 @@ app.get(`/campgrounds`, async (req, res) => {
   res.render(`campgrounds/index`, { campgrounds }); // render index.ejs and pass data to it
 });
 
+app.get(`/campgrounds/:id`, async (req, res) => {
+  const campground = await Campground.findById(req.params.id); // error handling missing
+  res.render(`campgrounds/show`, { campground });
+});
+
 // start the express web app, listening for requests
 app.listen(3000, () => {
   console.log(`Serving on port 3000`);
