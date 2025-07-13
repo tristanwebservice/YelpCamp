@@ -15,7 +15,7 @@ db.once(`open`, () => {
 
 // this will help to generate a title
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
-q;
+
 // this function will populate our db with sample data (also ensures data is freshly generated)
 const seedDB = async () => {
   await Campground.deleteMany({});
