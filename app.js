@@ -66,6 +66,12 @@ app.put(`/campgrounds/:id`, async (req, res) => {
   res.redirect(`/campgrounds/${campground.id}`);
 });
 
+app.delete(`/campgrounds/:id`, async (req, res) => {
+  const { id } = req.params;
+  await Campground.findByIdAndDelete(id);
+  res.redirect(`/campgrounds`);
+});
+
 // start the express web app, listening for requests
 app.listen(3000, () => {
   console.log(`Serving on port 3000`);
