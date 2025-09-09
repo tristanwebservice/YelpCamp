@@ -83,7 +83,9 @@ app.post(
 app.get(
   `/campgrounds/:id`,
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id); // error handling missing
+    const campground = await Campground.findById(req.params.id).populate(
+      `reviews`
+    ); // error handling missing
     res.render(`campgrounds/show`, { campground });
   })
 );
