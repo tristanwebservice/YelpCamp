@@ -8,6 +8,12 @@ const CampgroundSchema = new Schema({
   price: Number,
   description: String,
   location: String,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: `Review`,
+    },
+  ],
 });
 
 // mongoose will create a model named Campground based on the schema
