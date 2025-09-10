@@ -1,86 +1,87 @@
-const express = require(`express`);
+const express = require("express");
 const router = express.Router();
-const catchAsync = require(`../utils/catchAsync`);
-const ExpressError = require(`../utils/ExpressError`);
-const Campground = require(`../models/campground`);
-const { campgroundSchema } = require(`../schemas.js`);
+const catchAsync = require("../utils/catchAsync");
+const ExpressError = require("../utils/ExpressError");
+const Campground = require("../models/campground");
+const { campgroundSchema } = require("../schemas.js");
 
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body);
   if (error) {
-    const msg = error.details.map((el) => el.message).join(`,`);
+    const msg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(msg, 400);
   } else {
     next();
   }
 };
 
-// read: displays all campgrounds
+// index
 router.get(
-  `/`,
+  "/",
   catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({}); // fetches data from db
-    res.render(`campgrounds/index`, { campgrounds }); // render index.ejs and pass data to it
+    const campgrounds = await Campground.find({});
+    res.render("campgrounds/index", { campgrounds });
   })
 );
 
-// create show form new campground
-router.get(`/new`, (req, res) => {
-  res.render(`campgrounds/new`);
+// new form
+router.get("/new", (req, res) => {
+  res.render("campgrounds/new");
 });
 
-// create, new submission, validate required fields with joi
+// create
 router.post(
-  `/`,
+  "/",
   validateCampground,
-  catchAsync(async (req, res, next) => {
+  catchAsync(async (req, res) => {
     if (!req.body.campground)
-      throw new ExpressError(`Invalid Campground Data`, 400);
+      throw new ExpressError("Invalid Campground Data", 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
-// read, display details
+// show
 router.get(
-  `/:id`,
+  "/:id",
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id).populate(
-      `reviews`
-    ); // error handling missing
-    res.render(`campgrounds/show`, { campground });
+      "reviews"
+    );
+    res.render("campgrounds/show", { campground });
   })
 );
 
-// update: edit a campground
+// edit form
 router.get(
-  `/:id/edit`,
+  "/:id/edit",
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id); // error handling missing
-    res.render(`campgrounds/edit`, { campground });
+    const campground = await Campground.findById(req.params.id);
+    res.render("campgrounds/edit", { campground });
   })
 );
 
-// update: handling submissoin
+// update
 router.put(
-  `/:id`,
+  "/:id",
   validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
-    res.redirect(`/campgrounds/${campground.id}`);
+    res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
+// delete
 router.delete(
-  `/:id`,
+  "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
-    res.redirect(`/campgrounds`);
+    res.redirect("/campgrounds");
   })
 );
 
