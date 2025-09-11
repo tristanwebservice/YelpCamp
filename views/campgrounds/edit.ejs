@@ -8,6 +8,7 @@
       novalidate
       class="validated-form"
     >
+      <!-- title-->
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
         <input
@@ -30,6 +31,8 @@
           required
         />
       </div>
+
+      <!-- img -->
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>
         <input
@@ -41,14 +44,15 @@
           required
         />
       </div>
+
+      <!-- price-->
       <div class="mb-3">
         <label class="form-label" for="price">Campground Price</label>
         <div class="input-group">
-          <!-- The Bootstrap 5 way for input-group-text is without -prepend/-append divs -->
           <span class="input-group-text">$</span>
           <input
             id="price"
-            type="text"
+            type="number"
             class="form-control"
             placeholder="0.00"
             aria-label="Price"
@@ -59,6 +63,8 @@
           />
         </div>
       </div>
+
+      <!-- description -->
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
         <textarea
@@ -71,6 +77,8 @@
 <%= campground.description %></textarea
         >
       </div>
+
+      <!-- submit-->
       <button class="btn btn-info mb-3">Update Campground</button>
     </form>
     <a href="/campgrounds/<%= campground._id %>">Back to Campground</a>
