@@ -2,6 +2,7 @@ const mongoose = require(`mongoose`); // mongoose lib
 const { campgroundSchema } = require("../schemas");
 const Schema = mongoose.Schema; // shortcut
 const Review = require(`./review`);
+const user = require("./user");
 
 // the blueprint for each campground
 const CampgroundSchema = new Schema({
@@ -10,6 +11,10 @@ const CampgroundSchema = new Schema({
   price: Number,
   description: String,
   location: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: `User`,
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,
