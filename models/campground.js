@@ -3,11 +3,17 @@ const { campgroundSchema } = require("../schemas");
 const Schema = mongoose.Schema; // shortcut
 const Review = require(`./review`);
 const user = require("./user");
+const { string } = require("joi");
 
 // the blueprint for each campground
 const CampgroundSchema = new Schema({
   title: String,
-  image: String,
+  images: [
+    {
+      url: String,
+      filename: String,
+    },
+  ],
   price: Number,
   description: String,
   location: String,
