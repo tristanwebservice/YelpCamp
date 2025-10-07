@@ -1,6 +1,5 @@
 (function () {
   "use strict";
-  bsCustomFileInput.init();
   // selects all forms that will use bootstrap validation
   const forms = document.querySelectorAll(".validated-form");
 
