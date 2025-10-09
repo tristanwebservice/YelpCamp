@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@maptiler/client": "^2.5.0",
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^17.2.2",
