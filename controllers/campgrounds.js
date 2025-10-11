@@ -31,6 +31,10 @@ module.exports.createCampground = async (req, res) => {
   campground.geometry = geoData.features[0].geometry;
   campground.location = geoData.features[0].place_name;
 
+  if (!req.files || req.files.length === 0) {
+    req.flash(`error`, `You must upload at least one image.`);
+    return res.redirect(`/campgrounds/new`);
+  }
   campground.images = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
@@ -78,7 +82,7 @@ module.exports.updateCampground = async (req, res) => {
       `error`,
       `Could not geocode that location. Please try a new location.`
     );
-    return res.redirect(`/campgrounds/new`);
+    return res.redirect(`/campgrounds/${id}/edit`);
   }
 
   const campground = await Campground.findByIdAndUpdate(id, {
@@ -88,6 +92,11 @@ module.exports.updateCampground = async (req, res) => {
   campground.geometry = geoData.features[0].geometry;
   campground.location = geoData.features[0].place_name;
 
+  const totalImages = (campground.images.length || 0) + (req.files.length || 0);
+  if (totalImages === 0) {
+    req.flash("error", "Campground must have at least one image.");
+    return res.redirect(`/campgrounds/${id}/edit`);
+  }
   const imgs = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
