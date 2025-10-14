@@ -1,9 +1,6 @@
 if (process.env.NODE_ENV !== `production`) {
   require(`dotenv`).config();
 }
-
-console.log(process.env.SECRET);
-
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -17,9 +14,12 @@ const LocalStrategy = require(`passport-local`);
 const User = require(`./models/user`);
 const sanitizeV5 = require("./utils/mongoSanitizeV5.js");
 
+const helmet = require(`helmet`);
+
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
+const { contentSecurityPolicy } = require("helmet");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -43,18 +43,70 @@ app.use(express.static(path.join(__dirname, `public`)));
 app.use(sanitizeV5({ replaceWith: "_" }));
 
 const sessionConfig = {
-  secret: `secret`,
+  name: `session`,
+  secret: process.env.SESSION_SECRET || `dev-secret`,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === `production`,
+    sameSite: `lax`,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   },
 };
 
 app.use(session(sessionConfig));
 app.use(flash());
+
+app.use(helmet());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com/",
+];
+
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com/",
+];
+
+const connectSrcUrls = [
+  "https://api.maptiler.com/",
+  "https://events.maptiler.com/", // If you see events.maptiler.com errors too
+  "https://cdn.maptiler.com/", // Source maps
+  "https://cdn.jsdelivr.net", // Bootstrap source maps
+];
+
+const fontSrcUrls = [];
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/diebt4sd6/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        "https://images.unsplash.com/",
+        "https://api.maptiler.com/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
