@@ -21,7 +21,12 @@ const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
 const { contentSecurityPolicy } = require("helmet");
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp");
+const MongoStore = require("connect-mongo");
+
+// const dbUrl = process.env.DB_URL;
+const dbUrl = "mongodb://localhost:27017/yelp-camp";
+
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -42,20 +47,33 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, `public`)));
 app.use(sanitizeV5({ replaceWith: "_" }));
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 3600, // 24 hours
+  crypto: {
+    secret: process.env.SESSION_SECRET || "dev-secret",
+  },
+});
+
+store.on(`error`, function (e) {
+  console.log(`Session store error`, e);
+});
+
 const sessionConfig = {
-  name: `session`,
-  secret: process.env.SESSION_SECRET || `dev-secret`,
+  store,
+  name: "session",
+  secret: process.env.SESSION_SECRET || "dev-secret",
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === `production`,
-    sameSite: `lax`,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   },
 };
-
 app.use(session(sessionConfig));
+
 app.use(flash());
 
 app.use(helmet());
